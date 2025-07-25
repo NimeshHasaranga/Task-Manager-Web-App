@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/authContext';
 import Dashboard from './pages/Dashboard';
 import AddTask from './pages/AddTask';
@@ -11,20 +11,20 @@ import Navbar from './components/Navbar';
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <div className="min-h-screen bg-gray-50">
-          <Navbar />
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <main className="container mx-auto px-4 py-8">
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route element={<PrivateRoute />}>
-              <Route path="/" element={<Dashboard />} />
+              <Route index element={<Dashboard />} />
               <Route path="/add-task" element={<AddTask />} />
               <Route path="/edit-task/:id" element={<EditTask />} />
             </Route>
           </Routes>
-        </div>
-      </Router>
+        </main>
+      </div>
     </AuthProvider>
   );
 }

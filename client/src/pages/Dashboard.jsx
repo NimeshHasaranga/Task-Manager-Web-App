@@ -6,35 +6,32 @@ import Spinner from '../components/Spinner';
 import Alert from '../components/Alert';
 
 const Dashboard = () => {
-  // Initialize filters state
   const [filters, setLocalFilters] = useState({
     status: '',
     priority: '',
     sort: '-createdAt'
   });
   
-  // Get tasks and actions from useTasks
   const { 
-    tasks, 
+    tasks = [], 
     loading, 
     error, 
-    setFilters: setTasksFilters, // Rename to avoid conflict
+    setFilters: setTasksFilters,
     remove 
   } = useTasks(filters);
 
-  // Handle filter changes
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     const newFilters = { ...filters, [name]: value };
     setLocalFilters(newFilters);
-    setTasksFilters(newFilters); // Update both local and tasks filters
+    setTasksFilters(newFilters);
   };
 
   if (loading) return <Spinner />;
   if (error) return <Alert type="error" message={error} />;
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">My Tasks</h1>
         <Link
@@ -114,7 +111,7 @@ const Dashboard = () => {
           ))}
         </div>
       )}
-    </div>
+    </>
   );
 };
 
