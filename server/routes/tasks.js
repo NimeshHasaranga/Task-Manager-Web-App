@@ -1,4 +1,5 @@
 const express = require('express');
+const router = express.Router();
 const {
   getTasks,
   getTask,
@@ -8,15 +9,12 @@ const {
 } = require('../controllers/tasks');
 const { protect } = require('../middleware/auth');
 
-const router = express.Router();
+// All routes start with /api/v1/tasks (from server.js mounting)
 
-router.route('/')
-  .get(protect, getTasks)
-  .post(protect, createTask);
-
-router.route('/:id')
-  .get(protect, getTask)
-  .put(protect, updateTask)
-  .delete(protect, deleteTask);
+router.get('/', protect, getTasks);
+router.post('/', protect, createTask);
+router.get('/:id', protect, getTask);
+router.put('/:id', protect, updateTask);
+router.delete('/:id', protect, deleteTask);
 
 module.exports = router;

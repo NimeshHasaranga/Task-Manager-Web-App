@@ -27,7 +27,7 @@ const TaskSchema = new mongoose.Schema({
     default: 'Pending'
   },
   user: {
-    type: mongoose.Schema.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },

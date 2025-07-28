@@ -1,86 +1,91 @@
 const Task = require('../models/Task');
 const ErrorResponse = require('../utils/errorResponse');
 
-// @desc    Get all tasks
-// @route   GET /api/v1/tasks
-// @access  Private
+// Helper function for advanced filtering
+const advancedResults = async (model, req, filter = {}) => {
+  let query;
+
+  // Copy req.query
+  const reqQuery = { ...req.query };
+
+  // Fields to exclude
+  const removeFields = ['select', 'sort', 'page', 'limit'];
+  removeFields.forEach(param => delete reqQuery[param]);
+
+  // Create query string
+  let queryStr = JSON.stringify(reqQuery);
+  queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+
+  // Finding resource
+  query = model.find(JSON.parse(queryStr)).where(filter);
+
+  // Select fields
+  if (req.query.select) {
+    const fields = req.query.select.split(',').join(' ');
+    query = query.select(fields);
+  }
+
+  // Sort
+  if (req.query.sort) {
+    const sortBy = req.query.sort.split(',').join(' ');
+    query = query.sort(sortBy);
+  } else {
+    query = query.sort('-createdAt');
+  }
+
+  // Pagination
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 25;
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+  const total = await model.countDocuments();
+
+  query = query.skip(startIndex).limit(limit);
+
+  // Executing query
+  const results = await query;
+
+  // Pagination result
+  const pagination = {};
+  if (endIndex < total) {
+    pagination.next = {
+      page: page + 1,
+      limit
+    };
+  }
+
+  if (startIndex > 0) {
+    pagination.prev = {
+      page: page - 1,
+      limit
+    };
+  }
+
+  return {
+    success: true,
+    count: results.length,
+    pagination,
+    data: results
+  };
+};
+
+// Get all tasks
 exports.getTasks = async (req, res, next) => {
   try {
-    // Filtering
-    let query;
-    const reqQuery = { ...req.query };
-    const removeFields = ['select', 'sort', 'page', 'limit'];
-    removeFields.forEach(param => delete reqQuery[param]);
-    
-    let queryStr = JSON.stringify(reqQuery);
-    queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
-    
-    query = Task.find(JSON.parse(queryStr)).where({ user: req.user.id });
-
-    // Select fields
-    if (req.query.select) {
-      const fields = req.query.select.split(',').join(' ');
-      query = query.select(fields);
-    }
-
-    // Sort
-    if (req.query.sort) {
-      const sortBy = req.query.sort.split(',').join(' ');
-      query = query.sort(sortBy);
-    } else {
-      query = query.sort('-createdAt');
-    }
-
-    // Pagination
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 25;
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-    const total = await Task.countDocuments();
-
-    query = query.skip(startIndex).limit(limit);
-
-    // Executing query
-    const tasks = await query;
-
-    // Pagination result
-    const pagination = {};
-    if (endIndex < total) {
-      pagination.next = {
-        page: page + 1,
-        limit
-      };
-    }
-
-    if (startIndex > 0) {
-      pagination.prev = {
-        page: page - 1,
-        limit
-      };
-    }
-
-    res.status(200).json({
-      success: true,
-      count: tasks.length,
-      pagination,
-      data: tasks
-    });
+    const results = await advancedResults(Task, req, { user: req.user.id });
+    res.status(200).json(results);
   } catch (err) {
     next(err);
   }
 };
 
-// @desc    Get single task
-// @route   GET /api/v1/tasks/:id
-// @access  Private
+// Get single task
 exports.getTask = async (req, res, next) => {
   try {
     const task = await Task.findById(req.params.id).where({ user: req.user.id });
 
     if (!task) {
-      return next(
-        new ErrorResponse(`Task not found with id of ${req.params.id}`, 404)
-      );
+      return next(new ErrorResponse(`Task not found with id of ${req.params.id}`, 404));
     }
 
     res.status(200).json({
@@ -92,9 +97,7 @@ exports.getTask = async (req, res, next) => {
   }
 };
 
-// @desc    Create new task
-// @route   POST /api/v1/tasks
-// @access  Private
+// Create task
 exports.createTask = async (req, res, next) => {
   try {
     // Add user to req.body
@@ -111,17 +114,13 @@ exports.createTask = async (req, res, next) => {
   }
 };
 
-// @desc    Update task
-// @route   PUT /api/v1/tasks/:id
-// @access  Private
+// Update task
 exports.updateTask = async (req, res, next) => {
   try {
     let task = await Task.findById(req.params.id).where({ user: req.user.id });
 
     if (!task) {
-      return next(
-        new ErrorResponse(`Task not found with id of ${req.params.id}`, 404)
-      );
+      return next(new ErrorResponse(`Task not found with id of ${req.params.id}`, 404));
     }
 
     task = await Task.findByIdAndUpdate(req.params.id, req.body, {
@@ -138,20 +137,16 @@ exports.updateTask = async (req, res, next) => {
   }
 };
 
-// @desc    Delete task
-// @route   DELETE /api/v1/tasks/:id
-// @access  Private
+// Delete task
 exports.deleteTask = async (req, res, next) => {
   try {
     const task = await Task.findById(req.params.id).where({ user: req.user.id });
 
     if (!task) {
-      return next(
-        new ErrorResponse(`Task not found with id of ${req.params.id}`, 404)
-      );
+      return next(new ErrorResponse(`Task not found with id of ${req.params.id}`, 404));
     }
 
-    await task.remove();
+    await task.deleteOne();
 
     res.status(200).json({
       success: true,

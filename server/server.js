@@ -1,29 +1,33 @@
-// Load environment variables FIRST
 require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const tasksRouter = require('./routes/tasks');
+const authRouter = require('./routes/auth');
 
-// Debug environment variables
-console.log('Environment Variables Loaded:', {
-  NODE_ENV: process.env.NODE_ENV,
-  PORT: process.env.PORT,
-  MONGO_URI: process.env.MONGO_URI ? '*****' : 'NOT FOUND'
+const app = express();
+
+// Middleware
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true
+}));
+app.use(express.json());
+
+// Database connection
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
+// Routes
+app.use('/api/v1/tasks', tasksRouter);
+app.use('/api/v1/auth', authRouter);
+
+// Error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ success: false, error: 'Server Error' });
 });
-
-const app = require('./app');
-const connectDB = require('./config/db');
-const http = require('http');
-
-// Connect to database
-connectDB();
 
 const PORT = process.env.PORT || 5000;
-
-const server = http.createServer(app);
-
-server.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-});
-
-process.on('unhandledRejection', (err) => {
-  console.error('Unhandled Rejection:', err.message);
-  server.close(() => process.exit(1));
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

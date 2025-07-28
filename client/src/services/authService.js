@@ -1,45 +1,22 @@
 import axios from 'axios';
 
-const API_URL = '/api/v1/auth';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1';
 
-// Register user
-const register = async (userData) => {
-  const response = await axios.post(`${API_URL}/register`, userData);
-  
-  if (response.data) {
-    localStorage.setItem('token', response.data.token);
+export default {
+  login: (email, password) => {
+    return axios.post(`${API_URL}/auth/login`, { email, password });
+  },
+  register: (name, email, password) => {
+    return axios.post(`${API_URL}/auth/register`, { name, email, password });
+  },
+  logout: () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  },
+  isAuthenticated: () => {
+    return !!localStorage.getItem('token');
+  },
+  getCurrentUser: () => {
+    return JSON.parse(localStorage.getItem('user'));
   }
-  
-  return response.data;
 };
-
-// Login user
-const login = async (userData) => {
-  const response = await axios.post(`${API_URL}/login`, userData);
-  
-  if (response.data) {
-    localStorage.setItem('token', response.data.token);
-  }
-  
-  return response.data;
-};
-
-// Get user data
-const getMe = async () => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`
-    }
-  };
-
-  const response = await axios.get(`${API_URL}/me`, config);
-  return response.data;
-};
-
-const authService = {
-  register,
-  login,
-  getMe
-};
-
-export default authService;

@@ -1,35 +1,25 @@
 import axios from 'axios';
 
-const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1';
 
-// Add auth token to requests
-api.interceptors.request.use((config) => {
+const getAuthHeader = () => {
   const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-// Handle errors consistently
-const handleRequest = async (request) => {
-  try {
-    const response = await request();
-    return response.data;
-  } catch (error) {
-    console.error('API Error:', error.response?.data || error.message);
-    throw error.response?.data?.message || error.message;
-  }
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
 };
 
 export default {
-  getTasks: (filters) => handleRequest(() => api.get('/tasks', { params: filters })),
-  createTask: (taskData) => handleRequest(() => api.post('/tasks', taskData)),
-  updateTask: (id, taskData) => handleRequest(() => api.put(`/tasks/${id}`, taskData)),
-  deleteTask: (id) => handleRequest(() => api.delete(`/tasks/${id}`)),
+  getTasks: (filters) => {
+    const params = new URLSearchParams();
+    if (filters.status) params.append('status', filters.status);
+    if (filters.priority) params.append('priority', filters.priority);
+    if (filters.sort) params.append('sort', filters.sort);
+    
+    return axios.get(`${API_URL}/tasks?${params.toString()}`, getAuthHeader());
+  },
+  deleteTask: (taskId) => axios.delete(`${API_URL}/tasks/${taskId}`, getAuthHeader()),
+  // Add other task-related methods here
 };

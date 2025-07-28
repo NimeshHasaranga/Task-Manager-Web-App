@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { format } from 'date-fns';
 
 const TaskItem = ({ task, onDelete }) => {
   const priorityColors = {
@@ -9,30 +8,28 @@ const TaskItem = ({ task, onDelete }) => {
   };
 
   const statusColors = {
-    Pending: 'bg-blue-100 text-blue-800',
-    Completed: 'bg-gray-100 text-gray-800'
+    Completed: 'bg-green-100 text-green-800',
+    Pending: 'bg-yellow-100 text-yellow-800'
   };
 
   return (
-    <div className="bg-white shadow rounded-lg p-4 hover:shadow-md transition-shadow">
+    <div className="bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow">
       <div className="flex justify-between items-start">
         <div>
-          <h3 className="text-lg font-medium text-gray-800">{task.title}</h3>
+          <h3 className="text-lg font-semibold text-gray-800">{task.title}</h3>
           <p className="text-gray-600 mt-1">{task.description}</p>
-          
-          <div className="mt-2 flex flex-wrap gap-2">
+          <div className="mt-2 flex space-x-2">
             <span className={`px-2 py-1 text-xs rounded-full ${priorityColors[task.priority]}`}>
               {task.priority}
             </span>
             <span className={`px-2 py-1 text-xs rounded-full ${statusColors[task.status]}`}>
               {task.status}
             </span>
-            <span className="px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full">
-              Due: {format(new Date(task.dueDate), 'MMM dd, yyyy')}
+            <span className="px-2 py-1 text-xs bg-gray-100 text-gray-800 rounded-full">
+              Due: {new Date(task.dueDate).toLocaleDateString()}
             </span>
           </div>
         </div>
-        
         <div className="flex space-x-2">
           <Link
             to={`/edit-task/${task._id}`}
