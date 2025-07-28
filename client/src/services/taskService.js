@@ -4,22 +4,36 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1';
 
 const getAuthHeader = () => {
   const token = localStorage.getItem('token');
+  if (!token) {
+    console.error('No token found in localStorage');
+    throw new Error('Authentication token not found');
+  }
+
   return {
     headers: {
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
     }
   };
 };
 
 export default {
-  getTasks: (filters) => {
-    const params = new URLSearchParams();
-    if (filters.status) params.append('status', filters.status);
-    if (filters.priority) params.append('priority', filters.priority);
-    if (filters.sort) params.append('sort', filters.sort);
-    
-    return axios.get(`${API_URL}/tasks?${params.toString()}`, getAuthHeader());
+  createTask: async (taskData) => {
+    try {
+      console.log('Creating task with data:', taskData);
+      const config = getAuthHeader();
+      const response = await axios.post(`${API_URL}/tasks`, taskData, config);
+      console.log('Task created successfully:', response.data);
+      return response;
+    } catch (error) {
+      console.error('Error in taskService.createTask:', error);
+      if (error.response && error.response.status === 401) {
+        console.error('Authentication failed - redirecting to login');
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+      }
+      throw error;
+    }
   },
-  deleteTask: (taskId) => axios.delete(`${API_URL}/tasks/${taskId}`, getAuthHeader()),
-  // Add other task-related methods here
+  // ... other methods
 };

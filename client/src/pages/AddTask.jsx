@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import taskService from '../services/taskService';
+import axios from 'axios';
 import Alert from '../components/Alert';
 import Spinner from '../components/Spinner';
 
@@ -28,6 +28,35 @@ const AddTask = () => {
     }
   });
 
+  const createTask = async (taskData) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1'}/tasks`,
+        taskData,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      return response;
+    } catch (error) {
+      console.error('API Error:', error);
+      if (error.response && error.response.status === 401) {
+        localStorage.removeItem('token');
+        navigate('/login');
+      }
+      throw error;
+    }
+  };
+
   const onSubmit = async (data) => {
     try {
       setLoading(true);
@@ -40,16 +69,53 @@ const AddTask = () => {
         dueDate: new Date(data.dueDate).toISOString()
       };
 
-      await taskService.createTask(taskData);
-      setSuccess('Task created successfully!');
-      reset();
-      
-      // Redirect to dashboard after 2 seconds
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 2000);
+      console.log('Submitting task data:', taskData);
+
+      const response = await createTask(taskData);
+      console.log('API response:', response);
+
+      if (response && response.status === 201) {
+        setSuccess('Task created successfully!');
+        reset();
+        
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 2000);
+      } else {
+        throw new Error('Unexpected response from server');
+      }
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to create task');
+      console.error('Error details:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+        stack: err.stack
+      });
+
+      let errorMessage = 'Failed to create task';
+      
+      if (err.response) {
+        // Server responded with error status
+        if (err.response.data && err.response.data.message) {
+          errorMessage = err.response.data.message;
+        } else if (err.response.status === 401) {
+          errorMessage = 'Session expired. Please login again.';
+        } else if (err.response.status === 400) {
+          errorMessage = 'Invalid task data. Please check your inputs.';
+        } else if (err.response.status === 500) {
+          errorMessage = 'Server error. Please try again later.';
+        } else {
+          errorMessage = `Server error (${err.response.status})`;
+        }
+      } else if (err.request) {
+        // Request was made but no response
+        errorMessage = 'Network error. Check your connection and try again.';
+      } else {
+        // Other errors
+        errorMessage = err.message || 'Error submitting task';
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -70,8 +136,23 @@ const AddTask = () => {
           </button>
         </div>
 
-        {error && <Alert type="error" message={error} />}
-        {success && <Alert type="success" message={success} />}
+        {error && (
+          <div className="alert-error">
+            {error}
+            <button onClick={() => setError(null)} className="alert-close">
+              &times;
+            </button>
+          </div>
+        )}
+
+        {success && (
+          <div className="alert-success">
+            {success}
+            <button onClick={() => setSuccess(null)} className="alert-close">
+              &times;
+            </button>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="add-task-form">
           <div className="form-group">
@@ -155,13 +236,17 @@ const AddTask = () => {
               className="submit-button"
               disabled={loading}
             >
-              {loading ? 'Creating...' : 'Create Task'}
+              {loading ? (
+                <>
+                  <span className="spinner"></span>
+                  Creating...
+                </>
+              ) : 'Create Task'}
             </button>
           </div>
         </form>
       </div>
 
-      {/* CSS Styles */}
       <style jsx>{`
         .add-task-container {
           max-width: 800px;
@@ -174,11 +259,6 @@ const AddTask = () => {
           border-radius: 8px;
           box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
           padding: 2rem;
-          transition: all 0.3s ease;
-        }
-
-        .add-task-card:hover {
-          box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
         }
 
         .add-task-header {
@@ -203,12 +283,42 @@ const AddTask = () => {
           color: #4a5568;
           cursor: pointer;
           font-size: 0.875rem;
-          transition: color 0.2s;
         }
 
         .back-button:hover {
           color: #2b6cb0;
           text-decoration: underline;
+        }
+
+        .alert-error {
+          background-color: #fee2e2;
+          border: 1px solid #fca5a5;
+          color: #b91c1c;
+          padding: 1rem;
+          border-radius: 0.375rem;
+          margin-bottom: 1rem;
+          position: relative;
+        }
+
+        .alert-success {
+          background-color: #dcfce7;
+          border: 1px solid #86efac;
+          color: #166534;
+          padding: 1rem;
+          border-radius: 0.375rem;
+          margin-bottom: 1rem;
+          position: relative;
+        }
+
+        .alert-close {
+          position: absolute;
+          top: 0.5rem;
+          right: 0.5rem;
+          background: none;
+          border: none;
+          font-size: 1.25rem;
+          cursor: pointer;
+          color: inherit;
         }
 
         .add-task-form {
@@ -234,7 +344,6 @@ const AddTask = () => {
           border: 1px solid #e2e8f0;
           border-radius: 4px;
           font-size: 1rem;
-          transition: all 0.2s;
         }
 
         .form-input:focus, .form-textarea:focus, .form-select:focus {
@@ -291,12 +400,10 @@ const AddTask = () => {
           background: white;
           color: #4a5568;
           cursor: pointer;
-          transition: all 0.2s;
         }
 
         .cancel-button:hover {
           background: #f7fafc;
-          border-color: #cbd5e0;
         }
 
         .submit-button {
@@ -307,7 +414,9 @@ const AddTask = () => {
           color: white;
           font-weight: 500;
           cursor: pointer;
-          transition: all 0.2s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .submit-button:hover {
@@ -317,6 +426,21 @@ const AddTask = () => {
         .submit-button:disabled {
           opacity: 0.7;
           cursor: not-allowed;
+        }
+
+        .spinner {
+          display: inline-block;
+          width: 1rem;
+          height: 1rem;
+          border: 2px solid rgba(255, 255, 255, 0.3);
+          border-radius: 50%;
+          border-top-color: white;
+          animation: spin 1s ease-in-out infinite;
+          margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
         }
       `}</style>
     </div>
