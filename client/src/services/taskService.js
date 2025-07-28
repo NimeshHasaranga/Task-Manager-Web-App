@@ -1,74 +1,35 @@
 import axios from 'axios';
 
-const API_URL = '/api/v1/tasks';
+const api = axios.create({
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
-// Get all tasks
-const getTasks = async (filters) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`
-    },
-    params: filters
-  };
+// Add auth token to requests
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
-  const response = await axios.get(API_URL, config);
-  return response.data;
+// Handle errors consistently
+const handleRequest = async (request) => {
+  try {
+    const response = await request();
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error.response?.data || error.message);
+    throw error.response?.data?.message || error.message;
+  }
 };
 
-// Get single task
-const getTask = async (taskId) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`
-    }
-  };
-
-  const response = await axios.get(`${API_URL}/${taskId}`, config);
-  return response.data;
+export default {
+  getTasks: (filters) => handleRequest(() => api.get('/tasks', { params: filters })),
+  createTask: (taskData) => handleRequest(() => api.post('/tasks', taskData)),
+  updateTask: (id, taskData) => handleRequest(() => api.put(`/tasks/${id}`, taskData)),
+  deleteTask: (id) => handleRequest(() => api.delete(`/tasks/${id}`)),
 };
-
-// Create new task
-const createTask = async (taskData) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`
-    }
-  };
-
-  const response = await axios.post(API_URL, taskData, config);
-  return response.data;
-};
-
-// Update task
-const updateTask = async (taskId, taskData) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`
-    }
-  };
-
-  const response = await axios.put(`${API_URL}/${taskId}`, taskData, config);
-  return response.data;
-};
-
-// Delete task
-const deleteTask = async (taskId) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`
-    }
-  };
-
-  const response = await axios.delete(`${API_URL}/${taskId}`, config);
-  return response.data;
-};
-
-const taskService = {
-  getTasks,
-  getTask,
-  createTask,
-  updateTask,
-  deleteTask
-};
-
-export default taskService;

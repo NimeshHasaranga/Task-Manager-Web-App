@@ -1,18 +1,18 @@
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 
-const priorityColors = {
-  High: 'bg-red-100 text-red-800',
-  Medium: 'bg-yellow-100 text-yellow-800',
-  Low: 'bg-green-100 text-green-800'
-};
-
-const statusColors = {
-  Pending: 'bg-blue-100 text-blue-800',
-  Completed: 'bg-gray-100 text-gray-800'
-};
-
 const TaskItem = ({ task, onDelete }) => {
+  const priorityColors = {
+    High: 'bg-red-100 text-red-800',
+    Medium: 'bg-yellow-100 text-yellow-800',
+    Low: 'bg-green-100 text-green-800'
+  };
+
+  const statusColors = {
+    Pending: 'bg-blue-100 text-blue-800',
+    Completed: 'bg-gray-100 text-gray-800'
+  };
+
   return (
     <div className="bg-white shadow rounded-lg p-4 hover:shadow-md transition-shadow">
       <div className="flex justify-between items-start">
