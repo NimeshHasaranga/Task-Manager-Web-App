@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import TaskForm from '../components/TaskForm';
+import Spinner from '../components/Spinner';
 
 function EditTask() {
   const [task, setTask] = useState(null);
@@ -25,13 +26,29 @@ function EditTask() {
   }, [id, navigate]);
 
   if (!task) return (
-    <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
-      <div className="text-2xl text-gray-300">Loading...</div>
+    <div
+      className="min-h-screen bg-gray-900 text-white flex items-center justify-center pt-20"
+      style={{
+        backgroundImage: `
+          radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.2) 1px, transparent 1px)
+        `,
+        backgroundSize: '30px 30px',
+      }}
+    >
+      <Spinner />
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
+    <div
+      className="min-h-screen bg-gray-900 text-white p-6 pt-20"
+      style={{
+        backgroundImage: `
+          radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.2) 1px, transparent 1px)
+        `,
+        backgroundSize: '30px 30px',
+      }}
+    >
       <div className="container mx-auto">
         <h2 className="text-3xl font-extrabold mb-6 text-center bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
           Edit Task

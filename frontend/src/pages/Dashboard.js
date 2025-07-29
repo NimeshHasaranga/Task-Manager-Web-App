@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import TaskCard from '../components/TaskCard';
+import Spinner from '../components/Spinner';
 
 function Dashboard() {
   const [tasks, setTasks] = useState([]);
   const [filters, setFilters] = useState({ priority: '', status: '', page: 1, sortBy: 'dueDate', order: 'asc' });
   const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true); // Add loading state
   const navigate = useNavigate();
 
   // Task summary data
@@ -58,6 +60,7 @@ function Dashboard() {
 
     const fetchTasks = async () => {
       try {
+        setLoading(true); // Set loading true before fetching
         const response = await axios.get('http://localhost:5000/api/tasks', {
           headers: { Authorization: `Bearer ${token}` },
           params: filters,
@@ -66,39 +69,38 @@ function Dashboard() {
         setTotal(response.data.total);
       } catch (error) {
         console.error('Error fetching tasks:', error);
+      } finally {
+        setLoading(false); // Set loading false after fetching
       }
     };
 
     fetchTasks();
   }, [filters, navigate]);
 
-  const handleFilterChange = (e) => {
-    setFilters({ ...filters, [e.target.name]: e.target.value, page: 1 });
-  };
-
-  const handleSortChange = (e) => {
-    const [sortBy, order] = e.target.value.split(':');
-    setFilters({ ...filters, sortBy, order, page: 1 });
-  };
-
-  const handlePageChange = (newPage) => {
-    setFilters({ ...filters, page: newPage });
-  };
-
-  const handleDelete = (taskId) => {
-    setTasks(tasks.filter(task => task._id !== taskId));
-  };
-
-  const handleToggleStatus = (taskId) => {
-    setTasks(tasks.map(task =>
-      task._id === taskId
-        ? { ...task, status: task.status === 'Pending' ? 'Completed' : 'Pending' }
-        : task
-    ));
-  };
+  if (loading) return (
+    <div
+      className="min-h-screen bg-gray-900 text-white flex items-center justify-center pt-20"
+      style={{
+        backgroundImage: `
+          radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.2) 1px, transparent 1px)
+        `,
+        backgroundSize: '30px 30px',
+      }}
+    >
+      <Spinner />
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
+    <div
+      className="min-h-screen bg-gray-900 text-white p-6 pt-20"
+      style={{
+        backgroundImage: `
+          radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.2) 1px, transparent 1px)
+        `,
+        backgroundSize: '30px 30px',
+      }}
+    >
       <div className="container mx-auto">
         <h2 className="text-3xl font-extrabold mb-6 text-center bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
           Task Dashboard
@@ -255,6 +257,31 @@ function Dashboard() {
       </div>
     </div>
   );
+}
+
+function handleFilterChange(e) {
+  setFilters({ ...filters, [e.target.name]: e.target.value, page: 1 });
+}
+
+function handleSortChange(e) {
+  const [sortBy, order] = e.target.value.split(':');
+  setFilters({ ...filters, sortBy, order, page: 1 });
+}
+
+function handlePageChange(newPage) {
+  setFilters({ ...filters, page: newPage });
+}
+
+function handleDelete(taskId) {
+  setTasks(tasks.filter(task => task._id !== taskId));
+}
+
+function handleToggleStatus(taskId) {
+  setTasks(tasks.map(task =>
+    task._id === taskId
+      ? { ...task, status: task.status === 'Pending' ? 'Completed' : 'Pending' }
+      : task
+  ));
 }
 
 export default Dashboard;

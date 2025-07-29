@@ -48,71 +48,111 @@ function TaskForm({ task, isEdit }) {
 
   return (
     <div className="container mx-auto p-6">
-      <div className="bg-black bg-opacity-50 p-8 rounded-lg shadow-lg border border-gray-700 hover:border-blue-500 transition-all duration-300 max-w-lg mx-auto">
-        <h2 className="text-2xl font-semibold mb-6 text-white">
+      <div className="bg-black bg-opacity-60 p-8 rounded-xl shadow-xl border border-gray-700 hover:border-blue-500 transition-all duration-300 max-w-lg mx-auto">
+        <h2 className="text-2xl font-extrabold mb-6 text-center bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
           {isEdit ? 'Edit Task' : 'Add Task'}
         </h2>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-gray-300 mb-2">Title</label>
+        <div className="space-y-6">
+          <div className="relative">
+            <label className="block text-gray-300 text-sm font-medium mb-1 transition-all duration-300">
+              Title
+            </label>
             <input
               type="text"
               name="title"
               value={formData.title}
               onChange={handleChange}
-              className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:bg-gray-700"
               required
+              placeholder="Enter task title"
             />
           </div>
-          <div>
-            <label className="block text-gray-300 mb-2">Description</label>
+          <div className="relative">
+            <label className="block text-gray-300 text-sm font-medium mb-1 transition-all duration-300">
+              Description
+            </label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:bg-gray-700"
               rows="4"
+              placeholder="Enter task description (optional)"
             />
           </div>
-          <div>
-            <label className="block text-gray-300 mb-2">Due Date</label>
+          <div className="relative">
+            <label className="block text-gray-300 text-sm font-medium mb-1 transition-all duration-300">
+              Due Date
+            </label>
             <input
               type="date"
               name="dueDate"
               value={formData.dueDate}
               onChange={handleChange}
-              className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:bg-gray-700"
               required
             />
           </div>
-          <div>
-            <label className="block text-gray-300 mb-2">Due Time</label>
+          <div className="relative">
+            <label className="block text-gray-300 text-sm font-medium mb-1 transition-all duration-300">
+              Due Time
+            </label>
             <input
               type="time"
               name="dueTime"
               value={formData.dueTime}
               onChange={handleChange}
-              className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:bg-gray-700"
             />
           </div>
-          <div>
-            <label className="block text-gray-300 mb-2">Priority</label>
+          <div className="relative">
+            <label className="block text-gray-300 text-sm font-medium mb-1 transition-all duration-300">
+              Priority
+            </label>
             <select
               name="priority"
               value={formData.priority}
               onChange={handleChange}
-              className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:bg-gray-700 appearance-none"
             >
               <option value="Low">Low</option>
               <option value="Medium">Medium</option>
               <option value="High">High</option>
             </select>
+            <svg
+              className="absolute right-3 top-10 w-5 h-5 text-gray-400 pointer-events-none"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
           </div>
           <button
             onClick={handleSubmit}
-            className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300"
+            className="flex items-center justify-center space-x-2 w-full px-4 py-3 rounded-full bg-gradient-to-r from-blue-600 to-blue-800 text-white font-semibold hover:from-blue-500 hover:to-blue-700 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)] hover:scale-105 transition-all duration-300"
           >
-            {isEdit ? 'Update Task' : 'Add Task'}
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d={isEdit ? 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15.828H9v-2.828l8.586-8.586z' : 'M12 4v16m8-8H4'}
+              />
+            </svg>
+            <span>{isEdit ? 'Update Task' : 'Add Task'}</span>
           </button>
         </div>
       </div>

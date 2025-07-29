@@ -1,0 +1,10 @@
+/* Ensure Tailwind's animate-spin works smoothly */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
