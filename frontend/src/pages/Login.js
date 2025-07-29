@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { CheckCircleIcon, CalendarIcon, StarIcon, ClockIcon, FolderIcon, BoltIcon, ChartBarIcon, DevicePhoneMobileIcon } from '@heroicons/react/24/outline';
 import Spinner from '../components/Spinner';
 
 function Login() {
@@ -49,7 +50,7 @@ function Login() {
 
   return (
     <div
-      className="min-h-screen bg-gray-900 text-white p-6 pt-20"
+      className="min-h-screen bg-gray-900 text-white pt-20 relative overflow-hidden"
       style={{
         backgroundImage: `
           radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.2) 1px, transparent 1px)
@@ -57,147 +58,269 @@ function Login() {
         backgroundSize: '30px 30px',
       }}
     >
-      <div className="container mx-auto max-w-6xl">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-          {/* Quotes and Icons Section */}
-          <div className="lg:col-span-2 space-y-12">
-            <div className="flex items-center space-x-6 animate-fade-in">
-              <svg
-                className="w-16 h-16 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                  d="M9 12l2 2 4-4M7.835 4.697a3.5 3.5 0 015.33 0l.335.334a3.5 3.5 0 005 0l.5-.5a3.5 3.5 0 015 5l-6.5 6.5a3.5 3.5 0 01-5 0l-.335-.334a3.5 3.5 0 00-5 0l-6.5 6.5a3.5 3.5 0 01-5-5l6.5-6.5z"
-                />
-              </svg>
-              <div>
-                <h1 className="text-3xl lg:text-4xl font-extrabold leading-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent animate-pulse">
-                  "Master Your Tasks, Conquer Your Goals"
-                </h1>
-                <p className="mt-2 text-gray-400 text-lg">
-                  Stay organized and take control of your productivity.
-                </p>
+      {/* Background Overlays */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+        <div className="absolute top-10 left-10 w-64 h-64 bg-blue-500 opacity-10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-purple-500 opacity-10 rounded-full blur-3xl animate-pulse animation-delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-teal-500 opacity-10 rounded-full blur-3xl animate-pulse animation-delay-2000"></div>
+        <div className="absolute top-1/4 right-1/4 w-72 h-72 bg-indigo-500 opacity-10 rounded-full blur-3xl animate-pulse animation-delay-3000"></div>
+      </div>
+      <div className="w-full px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Header Section */}
+        <div className="text-center mb-12 animate-slide-in relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-10 rounded-xl blur-xl"></div>
+          <h1 className="text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent relative z-10">
+            Welcome to TaskMaster
+          </h1>
+          <p className="mt-4 text-lg lg:text-xl text-gray-400 relative z-10">
+            Your ultimate tool for organizing tasks and achieving goals with ease.
+          </p>
+        </div>
+        <hr className="border-gray-700 mb-12" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 items-start">
+          {/* Quotes Section */}
+          <div className="order-last lg:order-first space-y-10 ml-4 lg:ml-6">
+            <h2 className="text-2xl lg:text-3xl font-bold mb-6 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+              Inspiration for Productivity
+            </h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="flex items-center space-x-4 animate-fade-in">
+                <CheckCircleIcon className="w-10 h-10 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300" />
+                <div>
+                  <h3 className="text-2xl lg:text-3xl font-extrabold leading-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent animate-pulse">
+                    "Master Your Tasks, Conquer Your Goals"
+                  </h3>
+                  <p className="mt-2 text-gray-400 text-base">
+                    Stay organized and take control of your productivity.
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center space-x-6 animate-fade-in animation-delay-200">
-              <svg
-                className="w-16 h-16 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-              <div>
-                <h1 className="text-3xl lg:text-4xl font-extrabold leading-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent animate-pulse">
-                  "Plan Today, Succeed Tomorrow"
-                </h1>
-                <p className="mt-2 text-gray-400 text-lg">
-                  Schedule your tasks to achieve your dreams with precision.
-                </p>
+              <div className="flex items-center space-x-4 animate-fade-in animation-delay-200">
+                <CalendarIcon className="w-10 h-10 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300" />
+                <div>
+                  <h3 className="text-2xl lg:text-3xl font-extrabold leading-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent animate-pulse">
+                    "Plan Today, Succeed Tomorrow"
+                  </h3>
+                  <p className="mt-2 text-gray-400 text-base">
+                    Schedule your tasks to achieve your dreams with precision.
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center space-x-6 animate-fade-in animation-delay-400">
-              <svg
-                className="w-16 h-16 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                  d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
-                />
-              </svg>
-              <div>
-                <h1 className="text-3xl lg:text-4xl font-extrabold leading-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent animate-pulse">
-                  "Tasks Tamed, Dreams Achieved"
-                </h1>
-                <p className="mt-2 text-gray-400 text-lg">
-                  Turn your ambitions into reality, one task at a time.
-                </p>
+              <div className="flex items-center space-x-4 animate-fade-in animation-delay-400">
+                <StarIcon className="w-10 h-10 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300" />
+                <div>
+                  <h3 className="text-2xl lg:text-3xl font-extrabold leading-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent animate-pulse">
+                    "Tasks Tamed, Dreams Achieved"
+                  </h3>
+                  <p className="mt-2 text-gray-400 text-base">
+                    Turn your ambitions into reality, one task at a time.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4 animate-fade-in animation-delay-600">
+                <ClockIcon className="w-10 h-10 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300" />
+                <div>
+                  <h3 className="text-2xl lg:text-3xl font-extrabold leading-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent animate-pulse">
+                    "Stay Focused, Stay Productive"
+                  </h3>
+                  <p className="mt-2 text-gray-400 text-base">
+                    Keep distractions at bay with seamless task management.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-          {/* Login Form Section */}
-          <div className="lg:col-span-1">
-            <div className="bg-black bg-opacity-60 p-8 rounded-xl shadow-xl border border-gray-700 hover:border-blue-500 transition-all duration-300 max-w-md mx-auto">
-              <h2 className="text-3xl font-extrabold mb-6 text-center bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-                Login
-              </h2>
-              {error && (
-                <div className="mb-4 p-3 bg-red-600 bg-opacity-20 border border-red-600 text-red-300 rounded-lg">
-                  {error}
-                </div>
-              )}
-              <div className="space-y-6">
-                <div className="relative">
-                  <label className="block text-gray-300 text-sm font-medium mb-1 transition-all duration-300">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:bg-gray-700"
-                    required
-                    placeholder="Enter your email"
-                  />
-                </div>
-                <div className="relative">
-                  <label className="block text-gray-300 text-sm font-medium mb-1 transition-all duration-300">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:bg-gray-700"
-                    required
-                    placeholder="Enter your password"
-                  />
-                </div>
-                <button
-                  onClick={handleSubmit}
-                  className="flex items-center justify-center space-x-2 w-full px-4 py-3 rounded-full bg-gradient-to-r from-blue-600 to-blue-800 text-white font-semibold hover:from-blue-500 hover:to-blue-700 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)] hover:scale-105 transition-all duration-300"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+          {/* Login Form */}
+          <div className="order-first lg:order-last lg:sticky lg:top-20">
+            <div className="bg-black bg-opacity-60 p-8 rounded-xl shadow-xl border border-gray-700 hover:border-blue-500 transition-all duration-300 max-w-md mx-auto relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-10 rounded-xl blur-xl"></div>
+              <div className="relative z-10">
+                <h2 className="text-3xl font-extrabold mb-6 text-center bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+                  Login
+                </h2>
+                {error && (
+                  <div className="mb-4 p-3 bg-red-600 bg-opacity-20 border border-red-600 text-red-300 rounded-lg">
+                    {error}
+                  </div>
+                )}
+                <div className="space-y-6">
+                  <div className="relative">
+                    <label className="block text-gray-300 text-sm font-medium mb-1 transition-all duration-300">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:bg-gray-700"
+                      required
+                      placeholder="Enter your email"
                     />
-                  </svg>
-                  <span>Login</span>
-                </button>
+                  </div>
+                  <div className="relative">
+                    <label className="block text-gray-300 text-sm font-medium mb-1 transition-all duration-300">
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:bg-gray-700"
+                      required
+                      placeholder="Enter your password"
+                    />
+                  </div>
+                  <button
+                    onClick={handleSubmit}
+                    className="flex items-center justify-center space-x-2 w-full px-4 py-3 rounded-full bg-gradient-to-r from-blue-600 to-blue-800 text-white font-semibold hover:from-blue-500 hover:to-blue-700 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)] hover:scale-105 transition-all duration-300"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                      />
+                    </svg>
+                    <span>Login</span>
+                  </button>
+                </div>
+                <p className="mt-6 text-center text-gray-400 text-sm">
+                  Don’t have an account?{' '}
+                  <a href="/register" className="text-blue-500 hover:text-blue-400 transition-colors duration-300">
+                    Register now
+                  </a>
+                  {' '}to start organizing your tasks!
+                </p>
               </div>
             </div>
           </div>
         </div>
+        {/* Why TaskMaster? Section */}
+        <div className="mt-12">
+          <h2 className="text-2xl lg:text-3xl font-bold mb-6 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+            Why TaskMaster?
+          </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="flex items-center space-x-4 animate-fade-in animation-delay-800">
+              <FolderIcon className="w-10 h-10 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300" />
+              <div>
+                <h3 className="text-xl lg:text-2xl font-semibold text-white">
+                  Streamlined Organization
+                </h3>
+                <p className="mt-2 text-gray-400 text-base">
+                  Keep all your tasks in one place with intuitive categorization and prioritization.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4 animate-fade-in animation-delay-1000">
+              <BoltIcon className="w-10 h-10 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300" />
+              <div>
+                <h3 className="text-xl lg:text-2xl font-semibold text-white">
+                  Boosted Productivity
+                </h3>
+                <p className="mt-2 text-gray-400 text-base">
+                  Focus on what matters most with tools to track progress and meet deadlines.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4 animate-fade-in animation-delay-1200">
+              <CheckCircleIcon className="w-10 h-10 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300" />
+              <div>
+                <h3 className="text-xl lg:text-2xl font-semibold text-white">
+                  Goal Achievement
+                </h3>
+                <p className="mt-2 text-gray-400 text-base">
+                  Turn your vision into reality with clear task management and progress insights.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4 animate-fade-in animation-delay-1400">
+              <ChartBarIcon className="w-10 h-10 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300" />
+              <div>
+                <h3 className="text-xl lg:text-2xl font-semibold text-white">
+                  Easy Task Creation
+                </h3>
+                <p className="mt-2 text-gray-400 text-base">
+                  Add and edit tasks quickly with a user-friendly form.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4 animate-fade-in animation-delay-1600">
+              <ChartBarIcon className="w-10 h-10 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300" />
+              <div>
+                <h3 className="text-xl lg:text-2xl font-semibold text-white">
+                  Advanced Filtering & Sorting
+                </h3>
+                <p className="mt-2 text-gray-400 text-base">
+                  Organize tasks by priority, status, or due date with ease.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4 animate-fade-in animation-delay-1800">
+              <ChartBarIcon className="w-10 h-10 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300" />
+              <div>
+                <h3 className="text-xl lg:text-2xl font-semibold text-white">
+                  Progress Tracking
+                </h3>
+                <p className="mt-2 text-gray-400 text-base">
+                  Visualize your progress with intuitive dashboards and widgets.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4 animate-fade-in animation-delay-2000">
+              <DevicePhoneMobileIcon className="w-10 h-10 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300" />
+              <div>
+                <h3 className="text-xl lg:text-2xl font-semibold text-white">
+                  Mobile Accessibility
+                </h3>
+                <p className="mt-2 text-gray-400 text-base">
+                  Manage your tasks on the go with our responsive mobile interface.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Footer Section */}
+        <footer className="mt-12 py-6 text-center border-t border-gray-700">
+          <div className="flex justify-center space-x-6 mb-4">
+            <a href="/about" className="text-gray-400 hover:text-blue-500 transition-colors duration-300">
+              About
+            </a>
+            <a href="/contact" className="text-gray-400 hover:text-blue-500 transition-colors duration-300">
+              Contact
+            </a>
+            <a href="/privacy" className="text-gray-400 hover:text-blue-500 transition-colors duration-300">
+              Privacy Policy
+            </a>
+            <a href="/terms" className="text-gray-400 hover:text-blue-500 transition-colors duration-300">
+              Terms of Service
+            </a>
+          </div>
+          <div className="flex justify-center space-x-4 mb-4">
+            <a href="https://twitter.com" className="text-gray-400 hover:text-blue-500 transition-colors duration-300">
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22 4.01c-1 .49-1.98.689-3 .99-1.121-1.265-2.783-1.335-4.38-.737S11.977 6.323 12 8v1c-3.245.083-6.135-1.395-8-4 0 0-4.182 7.433 4 11-1.872 1.247-3.739 2.088-6 2 4.308 1.784 9.165 1.418 12 0 1.643-.936 2.865-2.474 3.385-4.174.524-1.705.234-3.529-1-4.826-1.125.486-2.287.834-3.5 1.002 1.13-1.138 1.781-2.682 1.865-4.297A9.315 9.315 0 0122 4.01z" />
+              </svg>
+            </a>
+            <a href="https://facebook.com" className="text-gray-400 hover:text-blue-500 transition-colors duration-300">
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
+              </svg>
+            </a>
+          </div>
+          <p className="text-gray-500 text-sm">
+            &copy; {new Date().getFullYear()} TaskMaster. All rights reserved.
+          </p>
+        </footer>
       </div>
     </div>
   );
