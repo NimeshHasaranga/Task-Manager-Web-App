@@ -4,23 +4,22 @@ module.exports = {
   theme: {
     extend: {
       animation: {
-        'fade-in': 'fade-in 1s ease-out forwards',
+        'fade-in': 'fade-in 0.5s ease-out forwards',
         'slide-in': 'slide-in 1s ease-out forwards',
       },
       keyframes: {
         'fade-in': {
-          'from': { opacity: '0', transform: 'translateY(20px)' },
-          'to': { opacity: '1', transform: 'translateY(0)' },
+          from: { opacity: '0', transform: 'translateY(-10px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
         },
         'slide-in': {
-          'from': { opacity: '0', transform: 'translateY(-20px)' },
-          'to': { opacity: '1', transform: 'translateY(0)' },
+          from: { opacity: '0', transform: 'translateY(-20px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
         },
       },
       animationDelay: {
         200: '0.2s',
         400: '0.4s',
-        600: '0.6s',
         800: '0.8s',
         1000: '1s',
         1200: '1.2s',
@@ -38,14 +37,16 @@ module.exports = {
       addUtilities({
         '.animation-delay-200': { 'animation-delay': '0.2s' },
         '.animation-delay-400': { 'animation-delay': '0.4s' },
-        '.animation-delay-600': { 'animation-delay': '0.6s' },
         '.animation-delay-800': { 'animation-delay': '0.8s' },
         '.animation-delay-1000': { 'animation-delay': '1s' },
         '.animation-delay-1200': { 'animation-delay': '1.2s' },
         '.animation-delay-1400': { 'animation-delay': '1.4s' },
+        '.animation-delay-1600': { 'animation-delay': '1.6s' },
+        '.animation-delay-1800': { 'animation-delay': '1.8s' },
         '.animation-delay-2000': { 'animation-delay': '2s' },
         '.animation-delay-2200': { 'animation-delay': '2.2s' },
-      });á
+        '.animation-delay-2400': { 'animation-delay': '2.4s' },
+      });
     },
   ],
 };
