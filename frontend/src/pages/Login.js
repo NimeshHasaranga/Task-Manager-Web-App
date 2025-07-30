@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { CheckCircleIcon, CalendarIcon, StarIcon, ClockIcon, FolderIcon, BoltIcon, ChartBarIcon, DevicePhoneMobileIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon, CalendarIcon, StarIcon, ClockIcon, FolderIcon, BoltIcon, ChartBarIcon, UsersIcon, AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
 import Spinner from '../components/Spinner';
 
 function Login() {
@@ -79,7 +79,7 @@ function Login() {
         <hr className="border-gray-700 mb-12" />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 items-start">
           {/* Quotes Section */}
-          <div className="order-last lg:order-first space-y-10 ml-4 lg:ml-6">
+          <div className="order-last lg:order-first space-y-10 ml-8 lg:ml-10">
             <h2 className="text-2xl lg:text-3xl font-bold mb-6 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
               Inspiration for Productivity
             </h2>
@@ -87,7 +87,7 @@ function Login() {
               <div className="flex items-center space-x-4 animate-fade-in">
                 <CheckCircleIcon className="w-10 h-10 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300" />
                 <div>
-                  <h3 className="text-2xl lg:text-3xl font-extrabold leading-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent animate-pulse">
+                  <h3 className="text-2xl lg:text-3xl font-extrabold leading-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
                     "Master Your Tasks, Conquer Your Goals"
                   </h3>
                   <p className="mt-2 text-gray-400 text-base">
@@ -98,7 +98,7 @@ function Login() {
               <div className="flex items-center space-x-4 animate-fade-in animation-delay-200">
                 <CalendarIcon className="w-10 h-10 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300" />
                 <div>
-                  <h3 className="text-2xl lg:text-3xl font-extrabold leading-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent animate-pulse">
+                  <h3 className="text-2xl lg:text-3xl font-extrabold leading-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
                     "Plan Today, Succeed Tomorrow"
                   </h3>
                   <p className="mt-2 text-gray-400 text-base">
@@ -109,7 +109,7 @@ function Login() {
               <div className="flex items-center space-x-4 animate-fade-in animation-delay-400">
                 <StarIcon className="w-10 h-10 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300" />
                 <div>
-                  <h3 className="text-2xl lg:text-3xl font-extrabold leading-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent animate-pulse">
+                  <h3 className="text-2xl lg:text-3xl font-extrabold leading-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
                     "Tasks Tamed, Dreams Achieved"
                   </h3>
                   <p className="mt-2 text-gray-400 text-base">
@@ -120,7 +120,7 @@ function Login() {
               <div className="flex items-center space-x-4 animate-fade-in animation-delay-600">
                 <ClockIcon className="w-10 h-10 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300" />
                 <div>
-                  <h3 className="text-2xl lg:text-3xl font-extrabold leading-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent animate-pulse">
+                  <h3 className="text-2xl lg:text-3xl font-extrabold leading-tight bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
                     "Stay Focused, Stay Productive"
                   </h3>
                   <p className="mt-2 text-gray-400 text-base">
@@ -277,13 +277,35 @@ function Login() {
               </div>
             </div>
             <div className="flex items-center space-x-4 animate-fade-in animation-delay-2000">
-              <DevicePhoneMobileIcon className="w-10 h-10 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300" />
+              <ClockIcon className="w-10 h-10 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300" />
               <div>
                 <h3 className="text-xl lg:text-2xl font-semibold text-white">
-                  Mobile Accessibility
+                  Task Reminders
                 </h3>
                 <p className="mt-2 text-gray-400 text-base">
-                  Manage your tasks on the go with our responsive mobile interface.
+                  Stay on track with automated reminders for upcoming deadlines.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4 animate-fade-in animation-delay-2200">
+              <UsersIcon className="w-10 h-10 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300" />
+              <div>
+                <h3 className="text-xl lg:text-2xl font-semibold text-white">
+                  Collaboration Tools
+                </h3>
+                <p className="mt-2 text-gray-400 text-base">
+                  Share and manage tasks seamlessly with your team.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4 animate-fade-in animation-delay-2400">
+              <AdjustmentsHorizontalIcon className="w-10 h-10 text-blue-500 opacity-70 hover:opacity-100 transition-opacity duration-300" />
+              <div>
+                <h3 className="text-xl lg:text-2xl font-semibold text-white">
+                  Customizable Dashboards
+                </h3>
+                <p className="mt-2 text-gray-400 text-base">
+                  Personalize your task views for maximum efficiency.
                 </p>
               </div>
             </div>

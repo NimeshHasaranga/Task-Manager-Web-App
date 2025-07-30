@@ -28,6 +28,8 @@ module.exports = {
         1600: '1.6s',
         1800: '1.8s',
         2000: '2s',
+        2200: '2.2s',
+        2400: '2.4s',
       },
     },
   },
@@ -41,10 +43,9 @@ module.exports = {
         '.animation-delay-1000': { 'animation-delay': '1s' },
         '.animation-delay-1200': { 'animation-delay': '1.2s' },
         '.animation-delay-1400': { 'animation-delay': '1.4s' },
-        '.animation-delay-1600': { 'animation-delay': '1.6s' },
-        '.animation-delay-1800': { 'animation-delay': '1.8s' },
         '.animation-delay-2000': { 'animation-delay': '2s' },
-      });
+        '.animation-delay-2200': { 'animation-delay': '2.2s' },
+      });á
     },
   ],
 };
