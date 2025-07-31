@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import TaskCard from '../components/TaskCard';
 import Spinner from '../components/Spinner';
@@ -8,8 +8,98 @@ function Dashboard() {
   const [tasks, setTasks] = useState([]);
   const [filters, setFilters] = useState({ priority: '', status: '', page: 1, sortBy: 'dueDate', order: 'asc' });
   const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
+  const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Retrieve success message from navigation state
+  useEffect(() => {
+    if (location.state?.successMessage) {
+      setSuccessMessage(location.state.successMessage);
+    }
+  }, [location.state]);
+
+  // Auto-dismiss success message after 3 seconds
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
+  // Fetch tasks from API with retry mechanism
+  const fetchTasks = async (retries = 3, delay = 1000) => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+      const response = await axios.get('http://localhost:5000/api/tasks', {
+        headers: { Authorization: `Bearer ${token}` },
+        params: filters,
+      });
+      setTasks(response.data.tasks || []);
+      setTotal(response.data.total || 0);
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+      if (retries > 0) {
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return fetchTasks(retries - 1, delay * 2); // Exponential backoff
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch tasks on mount or when filters change
+  useEffect(() => {
+    fetchTasks();
+  }, [filters, navigate]);
+
+  // Handle task deletion with optimistic update
+  const handleDelete = async (taskId) => {
+    setTasks(prev => prev.filter(task => task._id !== taskId)); // Optimistic update
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+      await axios.delete(`http://localhost:5000/api/tasks/${taskId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setSuccessMessage('Task successfully deleted!'); // Set message after successful DELETE
+      await fetchTasks(); // Sync with backend
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      await fetchTasks(); // Refetch to sync with backend state
+    }
+  };
+
+  // Handle task status toggle
+  const handleToggleStatus = async (taskId) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+      const task = tasks.find(t => t._id === taskId);
+      if (!task) return;
+      const newStatus = task.status === 'Pending' ? 'Completed' : 'Pending';
+      await axios.put(`http://localhost:5000/api/tasks/${taskId}`, { status: newStatus }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      await fetchTasks();
+    } catch (error) {
+      console.error('Error toggling task status:', error);
+    }
+  };
 
   // Task summary data
   const taskSummary = {
@@ -51,31 +141,21 @@ function Dashboard() {
     return Object.entries(dueDateMap).map(([date, titles]) => ({ date, titles }));
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
+  // Filter change handler
+  const handleFilterChange = (e) => {
+    setFilters(prev => ({ ...prev, [e.target.name]: e.target.value, page: 1 }));
+  };
 
-    const fetchTasks = async () => {
-      try {
-        setLoading(true); // Set loading true before fetching
-        const response = await axios.get('http://localhost:5000/api/tasks', {
-          headers: { Authorization: `Bearer ${token}` },
-          params: filters,
-        });
-        setTasks(response.data.tasks);
-        setTotal(response.data.total);
-      } catch (error) {
-        console.error('Error fetching tasks:', error);
-      } finally {
-        setLoading(false); // Set loading false after fetching
-      }
-    };
+  // Sort change handler
+  const handleSortChange = (e) => {
+    const [sortBy, order] = e.target.value.split(':');
+    setFilters(prev => ({ ...prev, sortBy, order, page: 1 }));
+  };
 
-    fetchTasks();
-  }, [filters, navigate]);
+  // Page change handler
+  const handlePageChange = (newPage) => {
+    setFilters(prev => ({ ...prev, page: newPage }));
+  };
 
   if (loading) return (
     <div
@@ -102,6 +182,36 @@ function Dashboard() {
       }}
     >
       <div className="container mx-auto">
+        {/* Success Message */}
+        {successMessage && (
+          <div className="fixed top-20 right-4 max-w-sm bg-black bg-opacity-60 p-4 rounded-lg shadow-xl border border-gray-700 hover:border-blue-500 transition-all duration-300 animate-fade-in z-50">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-10 rounded-lg blur-xl"></div>
+              <div className="relative flex items-center justify-between">
+                <p className="text-green-400 text-base">{successMessage}</p>
+                <button
+                  onClick={() => setSuccessMessage('')}
+                  className="p-1 bg-gray-700 rounded-full hover:bg-gray-600 transition-colors duration-300"
+                >
+                  <svg
+                    className="w-5 h-5 text-gray-300"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         <h2 className="text-3xl font-extrabold mb-6 text-center bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
           Task Dashboard
         </h2>
@@ -257,31 +367,6 @@ function Dashboard() {
       </div>
     </div>
   );
-}
-
-function handleFilterChange(e) {
-  setFilters({ ...filters, [e.target.name]: e.target.value, page: 1 });
-}
-
-function handleSortChange(e) {
-  const [sortBy, order] = e.target.value.split(':');
-  setFilters({ ...filters, sortBy, order, page: 1 });
-}
-
-function handlePageChange(newPage) {
-  setFilters({ ...filters, page: newPage });
-}
-
-function handleDelete(taskId) {
-  setTasks(tasks.filter(task => task._id !== taskId));
-}
-
-function handleToggleStatus(taskId) {
-  setTasks(tasks.map(task =>
-    task._id === taskId
-      ? { ...task, status: task.status === 'Pending' ? 'Completed' : 'Pending' }
-      : task
-  ));
 }
 
 export default Dashboard;

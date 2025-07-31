@@ -40,7 +40,7 @@ function TaskForm({ task, isEdit }) {
       await axios[method](url, payload, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
-      navigate('/');
+      navigate('/', { state: { successMessage: isEdit ? 'Task successfully updated!' : 'Task successfully added!' } });
     } catch (error) {
       console.error('Error saving task:', error);
     }
