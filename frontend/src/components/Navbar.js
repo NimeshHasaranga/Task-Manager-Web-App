@@ -16,7 +16,7 @@ function Navbar() {
           to="/"
           className="text-2xl font-extrabold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent hover:text-blue-400 transition-colors duration-300"
         >
-          TaskMaster
+          Task Master
         </Link>
         <div className="flex space-x-4 items-center">
           {token ? (
