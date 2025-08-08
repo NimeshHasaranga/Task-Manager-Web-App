@@ -12,6 +12,9 @@ function TaskForm({ task, isEdit }) {
   });
   const navigate = useNavigate();
 
+  // Get today's date in YYYY-MM-DD format for min attribute
+  const today = new Date().toISOString().split('T')[0];
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -89,6 +92,7 @@ function TaskForm({ task, isEdit }) {
               name="dueDate"
               value={formData.dueDate}
               onChange={handleChange}
+              min={today}
               className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:bg-gray-700"
               required
             />
